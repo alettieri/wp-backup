@@ -1,0 +1,39 @@
+#!/bin/bash
+
+while test $# -gt 0; do
+    case "$1" in
+        -f)
+            shift
+            if test $# -gt 0; then
+                export FILE=$1
+            else
+                exit 1
+            fi
+            shift
+            ;;
+        -e)
+            shift
+            if test $# -gt 0; then
+                export EXCLUDE=''
+                IFS=';' read -ra ADDR <<< "$1"
+                for i in "${ADDR[@]}"; do
+                    export EXCLUDE="$EXCLUDE --exclude=$i"
+                done
+            fi
+            shift
+            ;;
+        *) 
+            break
+            ;;
+    esac
+done
+
+COMMAND="tar -czf $FILE"
+
+if [ "$EXCLUDE" != "" ]
+then
+    export COMMAND="$COMMAND $EXCLUDE"
+fi
+
+echo $COMMAND
+
