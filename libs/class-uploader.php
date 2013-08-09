@@ -111,7 +111,7 @@ class Uploader {
     }
 
 
-    public function upload( $file, $dispatch_cb ) {
+    public function upload( $file, $dispatch_cb = null ) {
         
         $path = pathinfo($this->path . "/" . $file);            
         $this->error = "";
