@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export d=$(date +"%Y.%m.%d.%H.%M")
 while test $# -gt 0; do
     case "$1" in
         -f)
@@ -28,12 +28,20 @@ while test $# -gt 0; do
     esac
 done
 
-COMMAND="tar -czf $FILE"
+export DIR=$(dirname ${FILE})
+export NAME=$(basename ${FILE})
+export ARCHIVE="${NAME}.${d}.tar.gz"
+export COMMAND="tar -czf $ARCHIVE"
 
 if [ "$EXCLUDE" != "" ]
 then
-    export COMMAND="$COMMAND $EXCLUDE"
+    export COMMAND="$COMMAND $EXCLUDE ${DIR}/${NAME}"
 fi
 
 echo $COMMAND
+eval $COMMAND
 
+php -q upload.php "$ARCHIVE"
+
+echo "rm $ARCHIVE"
+eval "rm $ARCHIVE"
